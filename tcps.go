@@ -23,7 +23,22 @@ func handleRequest(conn net.Conn) {
 		fmt.Println("Error reading:", err.Error())
 		return
 	}
-	path := string(buf[:reqLen-1])
+
+	where := 0
+	concat := false
+	if buf[reqLen-1] != '\n' {
+		for i := 0; i < reqLen; i++ {
+			if buf[i] == '\n' {
+				where = i
+				concat = true
+				break
+			}
+		}
+	} else {
+		where = reqLen - 1
+	}
+
+	path := string(buf[:where])
 	workdir := BASE_DIR + path
 	err = os.MkdirAll(workdir, 0777)
 	l := os.Chdir(workdir)
@@ -42,6 +57,9 @@ func handleRequest(conn net.Conn) {
 		defer stdin.Close()
 		defer conn.Close()
 		//fl, err := os.Open("h264")
+		if concat {
+			stdin.Write(buf[where+1:])
+		}
 		w := bufio.NewWriter(stdin)
 		n, er := w.ReadFrom(conn)
 		fmt.Println(n, err, er)

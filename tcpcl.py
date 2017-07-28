@@ -4,12 +4,19 @@ import socket
 import time   
 
 address = ('127.0.0.1', 3333)    
+a = open("h264")
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  
 s.connect(address)  
-s.send("abc")
-a = open("h264")
-data = a.read()
-s.send(data)
+
+s.send("flf\n")
+while True:
+    d = a.read(128)
+    if len(d) == 0:
+        break
+    s.send(d)
+    time.sleep(0.01)
+
+
+
 
 s.close()  
-
