@@ -64,6 +64,10 @@ func handleRequest(conn net.Conn) {
 		w := bufio.NewWriter(stdin)
 		n, er := w.ReadFrom(conn)
 		fmt.Println(n, err, er)
+		if er != nil {
+		    return
+		}
+		
 
 	}()
 
