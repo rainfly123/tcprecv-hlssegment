@@ -51,7 +51,7 @@ func handleRequest(conn net.Conn) {
 	cmd := exec.Command("ffmpeg", args[0:]...)
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println("l!ll!!!!!!!")
 	}
 
 	go func() {
@@ -65,17 +65,24 @@ func handleRequest(conn net.Conn) {
 		n, er := w.ReadFrom(conn)
 		fmt.Println(n, err, er)
 		if er != nil {
-		    return
+			return
 		}
-		
 
 	}()
 
-	out, err := cmd.CombinedOutput()
+	//out, err := cmd.CombinedOutput()
+	//if err != nil {
+	//	fmt.Println("!!!!!!!")
+	//	log.Fatal(err)
+	//}
+	//fmt.Printf("%s\n", out)
+	err = cmd.Start()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
-	fmt.Printf("%s\n", out)
+	log.Printf("Waiting for command to finish...")
+	err = cmd.Wait()
+	log.Printf("Command finished with error: %v", err)
 }
 
 func main() {
